@@ -23,18 +23,18 @@ fun LoginScreen(navController: NavController) {
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(color = backgroundColor)  // Aplica el color de fondo
+            .background(color = backgroundColor)
             .padding(16.dp)
-            .background(Color(0xFFEFEFEF)), // Cambia el color de fondo aquí
+            .background(Color(0xFFEFEFEF)),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
-        // Añadir la imagen encima del texto "Iniciar sesión"
+
         Image(
             painter = painterResource(id = R.drawable.logo_app),
             contentDescription = "Imagen de Inicio de Sesión",
             modifier = Modifier
-                .size(300.dp)  // Tamaño de la imagen
+                .size(300.dp)
                 .padding(bottom = 16.dp)
         )
 
@@ -70,7 +70,6 @@ fun LoginScreen(navController: NavController) {
                 val user = users.find { it.first == username && it.second == password }
                 if (user != null) {
                     errorMessage = ""
-                    // Navegar a la pantalla del menú si el inicio de sesión es exitoso
                     navController.navigate("home")
                 } else {
                     errorMessage = "Nombre de usuario o contraseña inválidos"

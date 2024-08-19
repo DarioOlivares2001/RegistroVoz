@@ -27,15 +27,14 @@ fun HomeScreen(onLoginClick: () -> Unit, onViewUsersClick: () -> Unit) {
     var tts by remember { mutableStateOf<TextToSpeech?>(null) }
     var selectedVowel by remember { mutableStateOf<String?>(null) }
 
-    // Inicializar Text-to-Speech
+
     LaunchedEffect(Unit) {
         tts = TextToSpeech(context) { status ->
             if (status != TextToSpeech.ERROR) {
-                // Configurar el idioma a español
+
                 val languageResult = tts?.setLanguage(Locale("es", "ES"))
                 if (languageResult == TextToSpeech.LANG_MISSING_DATA || languageResult == TextToSpeech.LANG_NOT_SUPPORTED) {
-                    // Manejo de errores en caso de que el idioma no esté disponible
-                    //LoginScreen(navController = ) .e("TextToSpeech", "Idioma español no soportado o faltan datos.")
+                  //LoginScreen(navController = ) .e("TextToSpeech", "Idioma español no soportado o faltan datos.")
                 }
             }
         }
@@ -49,7 +48,7 @@ fun HomeScreen(onLoginClick: () -> Unit, onViewUsersClick: () -> Unit) {
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
-        // Botón para ver usuarios registrados
+
         Button(
             onClick = {
                 onViewUsersClick()
@@ -72,7 +71,7 @@ fun HomeScreen(onLoginClick: () -> Unit, onViewUsersClick: () -> Unit) {
 
         Spacer(modifier = Modifier.height(20.dp))
 
-        // Mostrar botones de vocales
+
         val vowels = listOf("A", "E", "I", "O", "U")
         Row(
             modifier = Modifier
@@ -97,7 +96,6 @@ fun HomeScreen(onLoginClick: () -> Unit, onViewUsersClick: () -> Unit) {
 
         Spacer(modifier = Modifier.height(20.dp))
 
-        // Mostrar la imagen de la seña correspondiente a la vocal seleccionada
         selectedVowel?.let { vowel ->
             Image(
                 painter = painterResource(id = when (vowel) {
@@ -106,7 +104,7 @@ fun HomeScreen(onLoginClick: () -> Unit, onViewUsersClick: () -> Unit) {
                     "I" -> R.drawable.sign_i
                     "O" -> R.drawable.sign_o
                     "U" -> R.drawable.sign_u
-                    else -> R.drawable.sign_a // Imagen predeterminada
+                    else -> R.drawable.sign_a
                 }),
                 contentDescription = "Seña de la vocal $vowel",
                 modifier = Modifier
@@ -127,7 +125,7 @@ fun HomeScreen(onLoginClick: () -> Unit, onViewUsersClick: () -> Unit) {
 
         Spacer(modifier = Modifier.height(20.dp))
 
-        // Botón para ir al login
+
         Button(onClick = {
             onLoginClick()
         }) {
@@ -135,8 +133,7 @@ fun HomeScreen(onLoginClick: () -> Unit, onViewUsersClick: () -> Unit) {
         }
     }
 
-    // Liberar recursos de Text-to-Speech al salir de la pantalla
-    DisposableEffect(Unit) {
+   DisposableEffect(Unit) {
         onDispose {
             tts?.stop()
             tts?.shutdown()

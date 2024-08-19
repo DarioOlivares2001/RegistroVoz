@@ -38,10 +38,10 @@ fun AppNavigation(navController: NavHostController, modifier: Modifier = Modifie
         composable("home") {
             HomeScreen(
                 onLoginClick = { navController.navigate("login") },
-                onViewUsersClick = { navController.navigate("user_list") }  // Navegar a la lista de usuarios
+                onViewUsersClick = { navController.navigate("user_list") }
             )
         }
         composable("password_recovery") { PasswordRecoveryScreen(navController) }
-        composable("user_list") { UserListScreen() } // Nueva pantalla para la lista de usuarios
+        composable("user_list") { UserListScreen() }
     }
 }

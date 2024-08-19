@@ -21,7 +21,7 @@ fun MenuScreen(navController: NavController) {
     val context = LocalContext.current
     var tts by remember { mutableStateOf<TextToSpeech?>(null) }
 
-    // Inicializar Text-to-Speech
+
     LaunchedEffect(Unit) {
         tts = TextToSpeech(context) { status ->
             if (status != TextToSpeech.ERROR) {
@@ -97,7 +97,6 @@ fun MenuScreen(navController: NavController) {
         }
     }
 
-    // Liberar recursos de Text-to-Speech al salir de la pantalla
     DisposableEffect(Unit) {
         onDispose {
             tts?.stop()

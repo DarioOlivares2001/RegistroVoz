@@ -9,8 +9,7 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 
-// Un array para almacenar los usuarios registrados
-val users = mutableListOf<Pair<String, String>>() // Pair de nombre de usuario y contraseña
+val users = mutableListOf<Pair<String, String>>()
 
 @Composable
 fun RegisterScreen(navController: NavController) {
