@@ -14,7 +14,24 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 
 @Composable
-fun LoginScreen(navController: NavController) {
+fun LoginScreen(
+    navController: NavController,
+    onLogin: (String, String) -> Boolean = { username, password ->
+        users.find { it.first == username && it.second == password } != null
+    },
+    onNavigateToRegister: () -> Unit = { navController.navigate("register") },
+    onNavigateToPasswordRecovery: () -> Unit = { navController.navigate("password_recovery") },
+    onLoginButtonClick: (String, String) -> Unit = { username, password ->
+        if (onLogin(username, password)) {
+
+        } else {
+
+        }
+    },
+    onErrorMessage: (String) -> Unit = { errorMessage ->
+
+    }
+) {
     var username by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var errorMessage by remember { mutableStateOf("") }
@@ -67,13 +84,14 @@ fun LoginScreen(navController: NavController) {
 
         Button(
             onClick = {
-                val user = users.find { it.first == username && it.second == password }
-                if (user != null) {
+                val result = onLogin(username, password)
+                if (result) {
                     errorMessage = ""
                     navController.navigate("home")
                 } else {
                     errorMessage = "Nombre de usuario o contraseña inválidos"
                 }
+                onErrorMessage(errorMessage)
             },
             modifier = Modifier.fillMaxWidth()
         ) {
@@ -83,14 +101,14 @@ fun LoginScreen(navController: NavController) {
         Spacer(modifier = Modifier.height(8.dp))
 
         TextButton(
-            onClick = { navController.navigate("register") },
+            onClick = onNavigateToRegister,
             modifier = Modifier.fillMaxWidth()
         ) {
             Text(text = "¿No tienes una cuenta? Regístrate")
         }
 
         TextButton(
-            onClick = { navController.navigate("password_recovery") },
+            onClick = onNavigateToPasswordRecovery,
             modifier = Modifier.fillMaxWidth()
         ) {
             Text(text = "¿Olvidaste tu contraseña? Recupérala aquí")

@@ -35,12 +35,7 @@ fun AppNavigation(navController: NavHostController, modifier: Modifier = Modifie
     NavHost(navController = navController, startDestination = "login", modifier = modifier) {
         composable("login") { LoginScreen(navController) }
         composable("register") { RegisterScreen(navController) }
-        composable("home") {
-            HomeScreen(
-                onLoginClick = { navController.navigate("login") },
-                onViewUsersClick = { navController.navigate("user_list") }
-            )
-        }
+        composable("home") { HomeScreen(navController) }
         composable("password_recovery") { PasswordRecoveryScreen(navController) }
         composable("user_list") { UserListScreen() }
     }
