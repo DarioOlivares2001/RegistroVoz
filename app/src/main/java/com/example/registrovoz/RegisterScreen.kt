@@ -36,13 +36,13 @@ fun RegisterScreen(navController: NavController) {
         Text(text = "Registrarse", style = MaterialTheme.typography.headlineMedium)
         Spacer(modifier = Modifier.height(16.dp))
 
+        // Simplificamos el uso de OutlinedTextField
         OutlinedTextField(
             value = username,
             onValueChange = { username = it },
             label = { Text("Email") },
             modifier = Modifier.fillMaxWidth()
         )
-
         Spacer(modifier = Modifier.height(8.dp))
 
         OutlinedTextField(
@@ -51,7 +51,6 @@ fun RegisterScreen(navController: NavController) {
             label = { Text("Nombre") },
             modifier = Modifier.fillMaxWidth()
         )
-
         Spacer(modifier = Modifier.height(8.dp))
 
         OutlinedTextField(
@@ -60,7 +59,6 @@ fun RegisterScreen(navController: NavController) {
             label = { Text("Apellido") },
             modifier = Modifier.fillMaxWidth()
         )
-
         Spacer(modifier = Modifier.height(8.dp))
 
         OutlinedTextField(
@@ -70,7 +68,6 @@ fun RegisterScreen(navController: NavController) {
             visualTransformation = PasswordVisualTransformation(),
             modifier = Modifier.fillMaxWidth()
         )
-
         Spacer(modifier = Modifier.height(8.dp))
 
         OutlinedTextField(
@@ -80,42 +77,39 @@ fun RegisterScreen(navController: NavController) {
             visualTransformation = PasswordVisualTransformation(),
             modifier = Modifier.fillMaxWidth()
         )
-
         Spacer(modifier = Modifier.height(16.dp))
 
-        if (errorMessage.isNotEmpty()) {
-            Text(text = errorMessage, color = MaterialTheme.colorScheme.error)
+        // Muestra mensaje de error si es necesario
+        errorMessage.takeIf { it.isNotEmpty() }?.let {
+            Text(text = it, color = MaterialTheme.colorScheme.error)
             Spacer(modifier = Modifier.height(8.dp))
         }
 
         Button(
             onClick = {
-                when {
-                    firstName.isEmpty() || lastName.isEmpty() -> {
-                        errorMessage = "El nombre y apellido no pueden estar vacíos"
-                    }
-                    username.isEmpty() || password.isEmpty() -> {
-                        errorMessage = "El nombre de usuario y la contraseña no pueden estar vacíos"
-                    }
-                    password != confirmPassword -> {
-                        errorMessage = "Las contraseñas no coinciden"
-                    }
+                // Validaciones
+                errorMessage = when {
+                    firstName.isEmpty() || lastName.isEmpty() -> "El nombre y apellido no pueden estar vacíos"
+                    username.isEmpty() || password.isEmpty() -> "El nombre de usuario y la contraseña no pueden estar vacíos"
+                    password != confirmPassword -> "Las contraseñas no coinciden"
                     else -> {
                         isLoading = true
-                        errorMessage = ""
+                        ""
+                    }
+                }
 
-                        // Aquí registramos al usuario en Firebase usando el repositorio
-                        val user = User(username, password, firstName, lastName)
-                        coroutineScope.launch {
-                            val isSuccess = firebaseRepository.registerUser(user)
-                            isLoading = false
-                            if (isSuccess) {
-                                navController.navigate("login") {
-                                    popUpTo("register") { inclusive = true }
-                                }
-                            } else {
-                                errorMessage = "Error al registrar el usuario"
+                if (errorMessage.isEmpty()) {
+                    // Registra al usuario en Firebase
+                    val user = User(username, password, firstName, lastName)
+                    coroutineScope.launch {
+                        val isSuccess = firebaseRepository.registerUser(user)
+                        isLoading = false
+                        if (isSuccess) {
+                            navController.navigate("login") {
+                                popUpTo("register") { inclusive = true }
                             }
+                        } else {
+                            errorMessage = "Error al registrar el usuario"
                         }
                     }
                 }
