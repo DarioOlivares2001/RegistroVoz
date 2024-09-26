@@ -8,15 +8,23 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-
-val users = mutableListOf<Pair<String, String>>()
+import com.example.registrovoz.Model.User
+import com.example.registrovoz.Repository.FirebaseRepository
+import kotlinx.coroutines.launch
 
 @Composable
 fun RegisterScreen(navController: NavController) {
     var username by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var confirmPassword by remember { mutableStateOf("") }
+    var firstName by remember { mutableStateOf("") }
+    var lastName by remember { mutableStateOf("") }
     var errorMessage by remember { mutableStateOf("") }
+    var isLoading by remember { mutableStateOf(false) }
+
+    // Obtén el CoroutineScope para lanzar corutinas
+    val coroutineScope = rememberCoroutineScope()
+    val firebaseRepository = FirebaseRepository()
 
     Column(
         modifier = Modifier
@@ -31,7 +39,25 @@ fun RegisterScreen(navController: NavController) {
         OutlinedTextField(
             value = username,
             onValueChange = { username = it },
-            label = { Text("Nombre de usuario") },
+            label = { Text("Email") },
+            modifier = Modifier.fillMaxWidth()
+        )
+
+        Spacer(modifier = Modifier.height(8.dp))
+
+        OutlinedTextField(
+            value = firstName,
+            onValueChange = { firstName = it },
+            label = { Text("Nombre") },
+            modifier = Modifier.fillMaxWidth()
+        )
+
+        Spacer(modifier = Modifier.height(8.dp))
+
+        OutlinedTextField(
+            value = lastName,
+            onValueChange = { lastName = it },
+            label = { Text("Apellido") },
             modifier = Modifier.fillMaxWidth()
         )
 
@@ -65,6 +91,9 @@ fun RegisterScreen(navController: NavController) {
         Button(
             onClick = {
                 when {
+                    firstName.isEmpty() || lastName.isEmpty() -> {
+                        errorMessage = "El nombre y apellido no pueden estar vacíos"
+                    }
                     username.isEmpty() || password.isEmpty() -> {
                         errorMessage = "El nombre de usuario y la contraseña no pueden estar vacíos"
                     }
@@ -72,16 +101,33 @@ fun RegisterScreen(navController: NavController) {
                         errorMessage = "Las contraseñas no coinciden"
                     }
                     else -> {
-                        users.add(Pair(username, password))
-                        navController.navigate("login") {
-                            popUpTo("register") { inclusive = true }
+                        isLoading = true
+                        errorMessage = ""
+
+                        // Aquí registramos al usuario en Firebase usando el repositorio
+                        val user = User(username, password, firstName, lastName)
+                        coroutineScope.launch {
+                            val isSuccess = firebaseRepository.registerUser(user)
+                            isLoading = false
+                            if (isSuccess) {
+                                navController.navigate("login") {
+                                    popUpTo("register") { inclusive = true }
+                                }
+                            } else {
+                                errorMessage = "Error al registrar el usuario"
+                            }
                         }
                     }
                 }
             },
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth(),
+            enabled = !isLoading
         ) {
-            Text(text = "Registrarse")
+            if (isLoading) {
+                CircularProgressIndicator(color = MaterialTheme.colorScheme.onPrimary)
+            } else {
+                Text(text = "Registrarse")
+            }
         }
 
         Spacer(modifier = Modifier.height(8.dp))

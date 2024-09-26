@@ -6,6 +6,8 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ExitToApp
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -24,30 +26,20 @@ import kotlin.math.sin
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun HomeScreen(navController: NavController) {
+fun HomeScreen(navController: NavController, currentUserEmail: String) {
     val context = LocalContext.current
     var tts by remember { mutableStateOf<TextToSpeech?>(null) }
     var selectedLetter by remember { mutableStateOf<String?>(null) }
 
     // Inicializa TTS
     LaunchedEffect(Unit) {
-        try {
-            tts = TextToSpeech(context) { status ->
-                if (status != TextToSpeech.ERROR) {
-                    try {
-                        val languageResult = tts?.setLanguage(Locale("es", "ES"))
-                        if (languageResult == TextToSpeech.LANG_MISSING_DATA || languageResult == TextToSpeech.LANG_NOT_SUPPORTED) {
-
-                        }
-                    } catch (e: Exception) {
-
-                        e.printStackTrace()
-                    }
+        tts = TextToSpeech(context) { status ->
+            if (status != TextToSpeech.ERROR) {
+                val languageResult = tts?.setLanguage(Locale("es", "ES"))
+                if (languageResult == TextToSpeech.LANG_MISSING_DATA || languageResult == TextToSpeech.LANG_NOT_SUPPORTED) {
+                    // Manejo de error
                 }
             }
-        } catch (e: Exception) {
-
-            e.printStackTrace()
         }
     }
 
@@ -62,6 +54,15 @@ fun HomeScreen(navController: NavController) {
                             fontWeight = FontWeight.Bold
                         )
                     )
+                },
+                actions = {
+                    IconButton(onClick = { navController.navigate("login") }) {
+                        Icon(
+                            imageVector = Icons.Default.ExitToApp,
+                            contentDescription = "Salir",
+                            tint = Color.White
+                        )
+                    }
                 },
                 colors = TopAppBarDefaults.mediumTopAppBarColors(
                     containerColor = MaterialTheme.colorScheme.primary,
@@ -88,9 +89,7 @@ fun HomeScreen(navController: NavController) {
                     .padding(12.dp),
                 contentAlignment = Alignment.Center
             ) {
-
                 val offsetAngle = -90
-
                 alphabet.forEachIndexed { index, letter ->
                     val angleInRadians = Math.toRadians((angleStep * index + offsetAngle).toDouble())
                     val xOffset = (radius.value * cos(angleInRadians)).dp
@@ -98,13 +97,8 @@ fun HomeScreen(navController: NavController) {
 
                     Button(
                         onClick = {
-                            try {
-                                selectedLetter = letter.toString()
-                                tts?.speak(letter.toString(), TextToSpeech.QUEUE_FLUSH, null, null)
-                            } catch (e: Exception) {
-
-                                e.printStackTrace()
-                            }
+                            selectedLetter = letter.toString()
+                            tts?.speak(letter.toString(), TextToSpeech.QUEUE_FLUSH, null, null)
                         },
                         modifier = Modifier
                             .offset(xOffset, yOffset)
@@ -115,7 +109,6 @@ fun HomeScreen(navController: NavController) {
                         Text(text = letter.toString(), fontSize = 16.sp, fontWeight = FontWeight.Bold)
                     }
                 }
-
 
                 selectedLetter?.let { letter ->
                     Image(
@@ -138,7 +131,6 @@ fun HomeScreen(navController: NavController) {
                 }
             }
 
-
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -146,35 +138,18 @@ fun HomeScreen(navController: NavController) {
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Bottom
             ) {
-
                 Button(
-                    onClick = {
-                        try {
-                            navController.navigate("login")
-                        } catch (e: Exception) {
-
-                            e.printStackTrace()
-                        }
-                    },
-                    modifier = Modifier.padding(bottom = 8.dp)
+                    onClick = { navController.navigate("edit_user/$currentUserEmail") }
                 ) {
                     Text(
-                        text = "Ir al Login",
+                        text = "Modificar mis datos",
                         fontSize = 16.sp,
                         fontWeight = FontWeight.Bold
                     )
                 }
 
-
                 Button(
-                    onClick = {
-                        try {
-                            navController.navigate("user_list")
-                        } catch (e: Exception) {
-
-                            e.printStackTrace()
-                        }
-                    }
+                    onClick = { navController.navigate("user_list/$currentUserEmail") }
                 ) {
                     Text(
                         text = "Listado de Usuarios",
@@ -185,16 +160,10 @@ fun HomeScreen(navController: NavController) {
             }
         }
 
-
         DisposableEffect(Unit) {
             onDispose {
-                try {
-                    tts?.stop()
-                    tts?.shutdown()
-                } catch (e: Exception) {
-
-                    e.printStackTrace()
-                }
+                tts?.stop()
+                tts?.shutdown()
             }
         }
     }

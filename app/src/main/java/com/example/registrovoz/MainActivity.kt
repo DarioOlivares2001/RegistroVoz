@@ -1,5 +1,7 @@
 package com.example.registrovoz
 
+import LoginScreen
+import UserListScreen
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -15,7 +17,12 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.registrovoz.ui.theme.RegistroVozTheme
 
+
 class MainActivity : ComponentActivity() {
+
+
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -35,8 +42,19 @@ fun AppNavigation(navController: NavHostController, modifier: Modifier = Modifie
     NavHost(navController = navController, startDestination = "login", modifier = modifier) {
         composable("login") { LoginScreen(navController) }
         composable("register") { RegisterScreen(navController) }
-        composable("home") { HomeScreen(navController) }
+        composable("home/{username}") { backStackEntry ->
+            val username = backStackEntry.arguments?.getString("username") ?: ""
+            HomeScreen(navController, username)
+        }
+        composable("edit_user/{username}") { backStackEntry ->
+            val username = backStackEntry.arguments?.getString("username") ?: ""
+            EditUserScreen(navController, username)
+        }
+
         composable("password_recovery") { PasswordRecoveryScreen(navController) }
-        composable("user_list") { UserListScreen() }
+        composable("user_list/{username}") { backStackEntry ->
+            val username = backStackEntry.arguments?.getString("username") ?: ""
+            UserListScreen(username)
+        }
     }
 }

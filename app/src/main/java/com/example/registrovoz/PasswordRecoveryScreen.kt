@@ -8,6 +8,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.ktx.database
+import com.google.firebase.ktx.Firebase
 
 @Composable
 fun PasswordRecoveryScreen(navController: NavController) {
@@ -16,6 +20,8 @@ fun PasswordRecoveryScreen(navController: NavController) {
     var confirmPassword by remember { mutableStateOf("") }
     var errorMessage by remember { mutableStateOf("") }
     var successMessage by remember { mutableStateOf("") }
+
+    val database: DatabaseReference = Firebase.database.reference
 
     Column(
         modifier = Modifier
@@ -69,14 +75,25 @@ fun PasswordRecoveryScreen(navController: NavController) {
         Button(
             onClick = {
                 if (newPassword == confirmPassword) {
-                    val userIndex = users.indexOfFirst { it.first == username }
-                    if (userIndex != -1) {
-                        users[userIndex] = username to newPassword
-                        successMessage = "Contraseña actualizada con éxito!"
-                        errorMessage = ""
-                    } else {
-                        errorMessage = "Nombre de usuario no encontrado"
-                        successMessage = ""
+                    // Aquí buscamos al usuario en Firebase y actualizamos la contraseña
+                    database.child("users").get().addOnSuccessListener { snapshot ->
+                        val userNode = snapshot.children.find { it.child("username").value == username }
+                        if (userNode != null) {
+                            userNode.ref.child("password").setValue(newPassword).addOnCompleteListener { task ->
+                                if (task.isSuccessful) {
+                                    successMessage = "Contraseña actualizada con éxito!"
+                                    errorMessage = ""
+                                    // Opcional: Navegar a la pantalla de inicio de sesión
+                                    navController.navigate("login")
+                                } else {
+                                    errorMessage = "Error al actualizar la contraseña"
+                                    successMessage = ""
+                                }
+                            }
+                        } else {
+                            errorMessage = "Nombre de usuario no encontrado"
+                            successMessage = ""
+                        }
                     }
                 } else {
                     errorMessage = "Las contraseñas no coinciden"
