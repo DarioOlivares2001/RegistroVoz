@@ -31,7 +31,7 @@ fun HomeScreen(navController: NavController, currentUserEmail: String) {
     var tts by remember { mutableStateOf<TextToSpeech?>(null) }
     var selectedLetter by remember { mutableStateOf<String?>(null) }
 
-    // Inicializa TTS
+
     LaunchedEffect(Unit) {
         tts = TextToSpeech(context) { status ->
             if (status != TextToSpeech.ERROR) {
@@ -158,7 +158,7 @@ fun HomeScreen(navController: NavController, currentUserEmail: String) {
                     )
                 }
 
-                // Nuevo botón para ir a LocationPickerScreen
+
                 Button(
                     onClick = { navController.navigate("location_picker/$currentUserEmail") } // Asumiendo que tienes una ruta llamada "location_picker"
                 ) {

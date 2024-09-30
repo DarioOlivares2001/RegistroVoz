@@ -22,11 +22,11 @@ fun LoginScreen(navController: NavController) {
     var errorMessage by remember { mutableStateOf("") }
     var isLoading by remember { mutableStateOf(false) }
 
-    // Obtén el CoroutineScope para lanzar corutinas
+
     val coroutineScope = rememberCoroutineScope()
     val firebaseRepository = FirebaseRepository() // Instancia del repositorio
 
-    // Uso de color de fondo consistente
+
     val backgroundColor = Color(0xFFEFEFEF)
 
     Column(
@@ -67,7 +67,7 @@ fun LoginScreen(navController: NavController) {
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        // Mensaje de error con un diseño más limpio
+
         errorMessage.takeIf { it.isNotEmpty() }?.let {
             Text(text = it, color = MaterialTheme.colorScheme.error)
             Spacer(modifier = Modifier.height(8.dp))

@@ -16,9 +16,9 @@ public open class FirebaseRepository {
     open suspend fun registerUser(user: User): Boolean {
         return try {
             database.child("users").push().setValue(user).await()
-            true // Si se completa correctamente
+            true
         } catch (e: Exception) {
-            false // En caso de error
+            false
         }
     }
 
@@ -35,27 +35,27 @@ public open class FirebaseRepository {
 
 
     open suspend fun saveLocationByUsername(username: String, locationData: Map<String, Double>): Boolean {
-        // Loguea los datos que llegan al método
+
         Log.d("FirebaseRepository", "Datos recibidos - Username: $username, LocationData: $locationData")
 
         return try {
             val snapshot = database.child("users").orderByChild("username").equalTo(username).get().await()
 
             if (snapshot.exists()) {
-                // Recorre los resultados, debería haber solo uno
+
                 for (userSnapshot in snapshot.children) {
-                    // Guarda la ubicación dentro del nodo "location"
+
                     userSnapshot.ref.child("location").updateChildren(locationData).await()
                     Log.d("FirebaseRepository", "Ubicación guardada para el usuario: $username")
                 }
-                true // Operación exitosa
+                true
             } else {
                 Log.e("FirebaseRepository", "Usuario no encontrado: $username")
-                false // Usuario no encontrado
+                false
             }
         } catch (e: Exception) {
             Log.e("FirebaseRepository", "Error al guardar la ubicación: ${e.localizedMessage}", e)
-            false // Error al realizar la operación
+            false
         }
     }
 

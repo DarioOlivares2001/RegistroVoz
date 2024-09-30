@@ -23,10 +23,10 @@ fun EditUserScreen(navController: NavController, currentUserEmail: String) {
     var errorMessage by remember { mutableStateOf("") }
     var isLoading by remember { mutableStateOf(true) }
 
-    // Referencia a la base de datos
+
     val database: DatabaseReference = Firebase.database.reference.child("users")
 
-    // Cargar datos del usuario
+
     LaunchedEffect(Unit) {
         database.orderByChild("username").equalTo(currentUserEmail).addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
@@ -60,7 +60,7 @@ fun EditUserScreen(navController: NavController, currentUserEmail: String) {
             Text(text = "Modificar mis datos", style = MaterialTheme.typography.headlineMedium)
             Spacer(modifier = Modifier.height(16.dp))
 
-            // Campo de email deshabilitado
+
             OutlinedTextField(
                 value = currentUserEmail,
                 onValueChange = {}, // Sin acción ya que es solo lectura
@@ -124,7 +124,7 @@ fun EditUserScreen(navController: NavController, currentUserEmail: String) {
                             errorMessage = "Las contraseñas no coinciden"
                         }
                         else -> {
-                            // Realiza la actualización del usuario
+
                             updateUserByUsername(currentUserEmail, database, firstName, lastName, password) { success ->
                                 if (success) {
                                     navController.popBackStack()
@@ -143,13 +143,13 @@ fun EditUserScreen(navController: NavController, currentUserEmail: String) {
     }
 }
 
-// Función para actualizar el usuario
+
 fun updateUserByUsername(username: String, database: DatabaseReference, firstName: String, lastName: String, password: String, callback: (Boolean) -> Unit) {
     database.orderByChild("username").equalTo(username).addListenerForSingleValueEvent(object : ValueEventListener {
         override fun onDataChange(snapshot: DataSnapshot) {
             if (snapshot.exists()) {
                 for (userSnapshot in snapshot.children) {
-                    // Crea un mapa con los datos actualizados
+
                     val updatedUser = mapOf(
                         "firstName" to firstName,
                         "lastName" to lastName,
@@ -160,12 +160,12 @@ fun updateUserByUsername(username: String, database: DatabaseReference, firstNam
                     }
                 }
             } else {
-                callback(false) // Usuario no encontrado
+                callback(false)
             }
         }
 
         override fun onCancelled(error: DatabaseError) {
-            callback(false) // Error al consultar
+            callback(false)
         }
     })
 }

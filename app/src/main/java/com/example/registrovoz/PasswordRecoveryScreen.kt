@@ -75,7 +75,7 @@ fun PasswordRecoveryScreen(navController: NavController) {
         Button(
             onClick = {
                 if (newPassword == confirmPassword) {
-                    // Aquí buscamos al usuario en Firebase y actualizamos la contraseña
+
                     database.child("users").get().addOnSuccessListener { snapshot ->
                         val userNode = snapshot.children.find { it.child("username").value == username }
                         if (userNode != null) {
@@ -83,7 +83,7 @@ fun PasswordRecoveryScreen(navController: NavController) {
                                 if (task.isSuccessful) {
                                     successMessage = "Contraseña actualizada con éxito!"
                                     errorMessage = ""
-                                    // Opcional: Navegar a la pantalla de inicio de sesión
+
                                     navController.navigate("login")
                                 } else {
                                     errorMessage = "Error al actualizar la contraseña"

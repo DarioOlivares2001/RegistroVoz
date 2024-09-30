@@ -22,7 +22,7 @@ fun RegisterScreen(navController: NavController) {
     var errorMessage by remember { mutableStateOf("") }
     var isLoading by remember { mutableStateOf(false) }
 
-    // Obtén el CoroutineScope para lanzar corutinas
+
     val coroutineScope = rememberCoroutineScope()
     val firebaseRepository = FirebaseRepository()
 
@@ -36,7 +36,7 @@ fun RegisterScreen(navController: NavController) {
         Text(text = "Registrarse", style = MaterialTheme.typography.headlineMedium)
         Spacer(modifier = Modifier.height(16.dp))
 
-        // Simplificamos el uso de OutlinedTextField
+
         OutlinedTextField(
             value = username,
             onValueChange = { username = it },
@@ -79,7 +79,7 @@ fun RegisterScreen(navController: NavController) {
         )
         Spacer(modifier = Modifier.height(16.dp))
 
-        // Muestra mensaje de error si es necesario
+
         errorMessage.takeIf { it.isNotEmpty() }?.let {
             Text(text = it, color = MaterialTheme.colorScheme.error)
             Spacer(modifier = Modifier.height(8.dp))
@@ -87,7 +87,7 @@ fun RegisterScreen(navController: NavController) {
 
         Button(
             onClick = {
-                // Validaciones
+
                 errorMessage = when {
                     firstName.isEmpty() || lastName.isEmpty() -> "El nombre y apellido no pueden estar vacíos"
                     username.isEmpty() || password.isEmpty() -> "El nombre de usuario y la contraseña no pueden estar vacíos"
@@ -99,7 +99,7 @@ fun RegisterScreen(navController: NavController) {
                 }
 
                 if (errorMessage.isEmpty()) {
-                    // Registra al usuario en Firebase
+
                     val user = User(username, password, firstName, lastName)
                     coroutineScope.launch {
                         val isSuccess = firebaseRepository.registerUser(user)

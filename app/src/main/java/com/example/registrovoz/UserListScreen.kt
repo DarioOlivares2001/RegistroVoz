@@ -19,7 +19,7 @@ import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.launch
 
 @Composable
-public fun UserListScreen(currentUserEmail: String) {  // Parámetro con el email del usuario autenticado
+public fun UserListScreen(currentUserEmail: String) {
     var users by remember { mutableStateOf<List<User>>(emptyList()) }
     var loading by remember { mutableStateOf(true) }
     var error by remember { mutableStateOf<String?>(null) }
@@ -89,7 +89,7 @@ fun UserCard(
     database: DatabaseReference,
     onDeleteUser: (String) -> Unit
 ) {
-    val isAdmin = currentUserEmail == "admin@gmail.com"  // Verificar si el usuario es el admin
+    val isAdmin = currentUserEmail == "admin@gmail.com"
     val coroutineScope = rememberCoroutineScope()
 
     Card(
@@ -112,15 +112,15 @@ fun UserCard(
 
             Spacer(modifier = Modifier.weight(1f))
 
-            // Mostrar botón de eliminar solo si el usuario es admin
+
             if (isAdmin) {
                 IconButton(onClick = {
                     coroutineScope.launch {
                         deleteUserByUsername(user.username, database) { success ->
                             if (success) {
-                                onDeleteUser(user.username)  // Eliminar usuario de la lista
+                                onDeleteUser(user.username)
                             } else {
-                                // Manejar el error (opcional)
+
                             }
                         }
                     }
@@ -137,24 +137,22 @@ fun UserCard(
 }
 
 fun deleteUserByUsername(username: String, database: DatabaseReference, callback: (Boolean) -> Unit) {
-    // Realiza una consulta para buscar al usuario basado en su nombre de usuario
+
     database.orderByChild("username").equalTo(username).addListenerForSingleValueEvent(object : ValueEventListener {
         override fun onDataChange(snapshot: DataSnapshot) {
             if (snapshot.exists()) {
-                // Recorre los resultados (aunque debería haber solo uno)
                 for (userSnapshot in snapshot.children) {
-                    // Elimina el nodo completo del usuario
                     userSnapshot.ref.removeValue().addOnCompleteListener { task ->
                         callback(task.isSuccessful)
                     }
                 }
             } else {
-                callback(false) // Usuario no encontrado
+                callback(false)
             }
         }
 
         override fun onCancelled(error: DatabaseError) {
-            callback(false) // Error al consultar
+            callback(false)
         }
     })
 }
