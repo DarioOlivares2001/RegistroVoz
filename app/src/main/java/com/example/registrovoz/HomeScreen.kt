@@ -157,6 +157,17 @@ fun HomeScreen(navController: NavController, currentUserEmail: String) {
                         fontWeight = FontWeight.Bold
                     )
                 }
+
+                // Nuevo botón para ir a LocationPickerScreen
+                Button(
+                    onClick = { navController.navigate("location_picker/$currentUserEmail") } // Asumiendo que tienes una ruta llamada "location_picker"
+                ) {
+                    Text(
+                        text = "Seleccionar Ubicación",
+                        fontSize = 16.sp,
+                        fontWeight = FontWeight.Bold
+                    )
+                }
             }
         }
 

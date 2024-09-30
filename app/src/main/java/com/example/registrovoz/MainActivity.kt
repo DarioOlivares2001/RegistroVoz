@@ -1,5 +1,6 @@
 package com.example.registrovoz
 
+import LocationPickerScreen
 import LoginScreen
 import UserListScreen
 import android.os.Bundle
@@ -15,13 +16,11 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.example.registrovoz.Repository.FirebaseRepository
 import com.example.registrovoz.ui.theme.RegistroVozTheme
 
 
 class MainActivity : ComponentActivity() {
-
-
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -55,6 +54,12 @@ fun AppNavigation(navController: NavHostController, modifier: Modifier = Modifie
         composable("user_list/{username}") { backStackEntry ->
             val username = backStackEntry.arguments?.getString("username") ?: ""
             UserListScreen(username)
+        }
+
+        // Agrega la ruta para LocationPickerScreen
+        composable("location_picker/{username}") { backStackEntry ->
+            val username = backStackEntry.arguments?.getString("username") ?: ""
+            LocationPickerScreen(navController, username)
         }
     }
 }

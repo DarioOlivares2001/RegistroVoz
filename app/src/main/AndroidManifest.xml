@@ -4,6 +4,9 @@
 
     <!-- Permisos requeridos por la aplicación -->
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+
 
 
     <application
@@ -27,6 +30,14 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <!-- Agrega tu API Key aquí -->
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyBYLmYRQ-7ARI3AKN3kJsOqxh6JWHgb4QY"/>
+
+        <!-- Otras configuraciones -->
+
     </application>
 
 </manifest>

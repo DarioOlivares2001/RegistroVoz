@@ -19,7 +19,7 @@ import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.launch
 
 @Composable
-fun UserListScreen(currentUserEmail: String) {  // Parámetro con el email del usuario autenticado
+public fun UserListScreen(currentUserEmail: String) {  // Parámetro con el email del usuario autenticado
     var users by remember { mutableStateOf<List<User>>(emptyList()) }
     var loading by remember { mutableStateOf(true) }
     var error by remember { mutableStateOf<String?>(null) }
